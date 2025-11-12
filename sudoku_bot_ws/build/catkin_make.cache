@@ -1,0 +1,2 @@
+interface:move_arm_joints:mover_client:sudoku_fact_generator:vector_publisher
+-DCATKIN_DEVEL_PREFIX=/home/cooper_rosvm13/Documents/University/comp3027RoboticProgramming/assignment/sudoku_bot_ws/devel -DCMAKE_INSTALL_PREFIX=/home/cooper_rosvm13/Documents/University/comp3027RoboticProgramming/assignment/sudoku_bot_ws/install -G Unix Makefiles

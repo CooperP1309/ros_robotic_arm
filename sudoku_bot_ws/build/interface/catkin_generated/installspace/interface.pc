@@ -1,0 +1,8 @@
+prefix=/home/cooper_rosvm13/Documents/University/comp3027RoboticProgramming/assignment/sudoku_bot_ws/install
+
+Name: interface
+Description: Description of interface
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: message_generation message_runtime roscpp std_msgs sudoku_fact_generator

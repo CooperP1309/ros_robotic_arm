@@ -1,0 +1,8 @@
+# generated from catkin/cmake/template/pkg.context.pc.in
+CATKIN_PACKAGE_PREFIX = ""
+PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
+PROJECT_CATKIN_DEPENDS = "message_generation;message_runtime;roscpp;std_msgs;sudoku_fact_generator".replace(';', ' ')
+PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
+PROJECT_NAME = "interface"
+PROJECT_SPACE_DIR = "/home/cooper_rosvm13/Documents/University/comp3027RoboticProgramming/assignment/sudoku_bot_ws/install"
+PROJECT_VERSION = "0.0.0"

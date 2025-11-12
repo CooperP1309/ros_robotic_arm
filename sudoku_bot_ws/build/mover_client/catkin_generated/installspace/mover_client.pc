@@ -1,0 +1,8 @@
+prefix=/home/cooper_rosvm13/Documents/University/comp3027RoboticProgramming/assignment/sudoku_bot_ws/install
+
+Name: mover_client
+Description: Description of mover_client
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: 
