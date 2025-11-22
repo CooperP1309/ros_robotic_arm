@@ -58,9 +58,9 @@ int main(int argc, char **argv) {
 						        grid_vector.numbered_grids[i].num);
 
 		// ensure parameter extraction was successful
-		if (params[0] == 0 && params[1] == 0) {						// (whilst some params can be 0, it never
-			ROS_INFO_STREAM("Parameter extraction fault");			// occurs twice in the same row of params)
-			return 0;											// (I checked the file)
+		if (params[0] == 0 && params[1] == 0) {						// (whilst some params can be 0, 0 occuring twice
+			ROS_INFO_STREAM("Parameter extraction fault");			//  breaks the rules of sudoku)
+			return 0;												// (thus, checking for corrupted params is 0... 0)
 		}
 
 		for (int i = 0; i < 5; i++) {								// for each servo [i+1], execute it via the
@@ -72,64 +72,6 @@ int main(int argc, char **argv) {
 			ROS_INFO_STREAM("Successfully moved servo " << i+1 << " to approx. " << params[i] << "\n");
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//move_arm_joints::move_and_confirm::Request req;
-	//move_arm_joints::move_and_confirm::Response resp;
-
-	//req.move = 0.68;
-	//ROS_INFO_STREAM("Sending request to service: " << req.move << "\n");
-
-
-
-	//std::array<float,5> params = extract_parameters(100,100,100);
-
-	//std::array<float,5> params1 = extract_parameters(18,86,5);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//ROS_INFO_STREAM("Received resposne: " << resp.confirm << "\n");
 }
 
 
@@ -215,65 +157,61 @@ bool execute_move(int servo_number, float move) {
 	move_arm_joints::move_and_confirm::Response resp;
 	req.move = move;
 
-	// via a switch, the servo number dictates the service called
-	switch (servo_number) {
+	do {
+		// via a switch, the servo number dictates the service called
+		switch (servo_number) {
 
-	case 1:		// arm shoulder pan joint
+		case 1:		// arm shoulder pan joint
 
-		if (!arm_shoulder_pan_client.call(req, resp)) {
-			ROS_INFO_STREAM("Unable to contact service: arm shoulder pan");
+			if (!arm_shoulder_pan_client.call(req, resp)) {
+				ROS_INFO_STREAM("Unable to contact service: arm shoulder pan");
+				return false;
+			}
+
+			break;
+
+		case 2:		// arm eblow flex joint
+
+			if (!arm_elbow_flex_client.call(req, resp)) {
+				ROS_INFO_STREAM("Unable to contact service: arm elbow flex");
+				return false;
+			}
+
+			break;
+
+		case 3:		// arm wrist flex joint
+
+			if (!arm_wrist_flex_client.call(req, resp)) {
+				ROS_INFO_STREAM("Unable to contact service: arm wrist flex");
+				return false;
+			}
+		
+			break;
+
+		case 4:		// arm shoulder lift joint
+
+			if (!arm_shoulder_lift_client.call(req, resp)) {
+				ROS_INFO_STREAM("Unable to contact service: arm shoulder lift");
+				return false;
+			}
+		
+			break;
+
+		case 5:		// gripper joint
+
+			if (!gripper_client.call(req, resp)) {
+				ROS_INFO_STREAM("Unable to contact service");
+				return false;
+			}
+		
+			break;
+
+		default:
+			ROS_INFO_STREAM("invalid servo number");
 			return false;
 		}
 
-		break;
-
-	case 2:		// arm eblow flex joint
-
-		if (!arm_elbow_flex_client.call(req, resp)) {
-			ROS_INFO_STREAM("Unable to contact service: arm elbow flex");
-			return false;
-		}
-
-		break;
-
-	case 3:		// arm wrist flex joint
-
-		if (!arm_wrist_flex_client.call(req, resp)) {
-			ROS_INFO_STREAM("Unable to contact service: arm wrist flex");
-			return false;
-		}
-	
-		break;
-
-	case 4:		// arm shoulder lift joint
-
-		if (!arm_shoulder_lift_client.call(req, resp)) {
-			ROS_INFO_STREAM("Unable to contact service: arm shoulder lift");
-			return false;
-		}
-	
-		break;
-
-	case 5:		// gripper joint
-
-		if (!gripper_client.call(req, resp)) {
-			ROS_INFO_STREAM("Unable to contact service");
-			return false;
-		}
-	
-		break;
-
-	default:
-		ROS_INFO_STREAM("invalid servo number");
-		return false;
-	}
-
-	// recursively run again until move is secure
-	if (resp.confirm != move) {
-		if (!execute_move(servo_number, move)){
-			return false;
-		}
-	}
+	} while (resp.confirm != move);
 
 	return true;
 }
